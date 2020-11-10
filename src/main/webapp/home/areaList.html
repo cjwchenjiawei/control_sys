@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-header">区域一览</div>
+            <div class="layui-card-body">
+                <table id="demo" lay-filter="test"></table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-row">
+        <div class="layui-col-md1">
+            <button class="layui-btn" id="btnAdd">添加区域</button>
+        </div>
+        <div class="layui-col-md11">
+            <div class="layui-form-item">
+                <label class="layui-form-label">区域名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="areaName" required lay-verify="required" placeholder="请输入区域名称"
+                           autocomplete="off" class="layui-input" id="areaName">
+                </div>
+                <label class="layui-form-label">林种</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="areaForest" required lay-verify="required" placeholder="请输入林种"
+                           autocomplete="off" class="layui-input" id="areaForest">
+                </div>
+                <label class="layui-form-label">负责小班</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="myClass" required lay-verify="required" placeholder="请输入负责小班"
+                           autocomplete="off" class="layui-input" id="myClass">
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" id="btnQuery">立即查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+    layui.use(['table', 'jquery'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+
+        table.render({
+            id: 'areaTable'
+            , elem: '#demo'
+            , url: '/control_sys/area.do' //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            ,parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [ //表头
+                    {
+                        field: 'areaName',
+                        title: '区域名称',
+                        fixed: 'left'
+                    }, {
+                    field: 'areaForest',
+                    title: '林种'
+                }, {
+                    field: 'areaLand',
+                    title: '地类'
+                }, {
+                    field: 'areaTree',
+                    title: '优势树种'
+                }, {
+                    field: 'myClassName',
+                    title: '负责小班'
+                }
+                ]
+            ]
+        });
+
+        $('#btnQuery').on('click', function () {
+            table.reload("areaTable", {
+                where: {
+                    areaName: $('#areaName').val()
+                    , areaForest: $('#areaForest').val()
+                    , myClass: $('#myClass').val()
+                }
+                , page: {
+                    curr: 1
+                }
+            });
+        })
+
+
+        $('#btnAdd').on('click', function () {
+            layer.open({
+                type: 2 //此处以iframe举例
+                , content: "/control_sys/home/area_add.html"
+                , title: '添加区域'
+                , area: ['700px', '550px']
+                , shade: [0.8, '#393D49']
+                , anim: 4
+                , maxmin: true
+                , btn: ['添加', '取消'] //只是为了演示
+                , yes: function (index, layero) {
+                    let body = layer.getChildFrame("body", index);
+                    let areaName = body.find('input[name=areaName]').val()
+                    let areaForest = body.find('input[name=areaForest]').val()
+                    let areaTree = body.find('input[name=areaTree]').val()
+                    let areaLand = body.find('select[name=areaLand]').val()
+
+                    $.ajax({
+                        type: "post",
+                        url: "/control_sys/area.do?method=addArea",
+                        data: {
+                            "areaName": areaName,
+                            "areaForest": areaForest,
+                            "areaTree": areaTree,
+                            "areaLand": areaLand
+                        },
+                        success: function (res) {
+                            if (res == "true") {
+                                table.reload("areaTable", {
+                                    page: {
+                                        curr: 1
+                                    }
+                                })
+                                alert("添加成功")
+                            } else {
+                                alert("添加失败")
+                            }
+                        }
+                    })
+                    layer.close(index);
+                }
+                , btn2: function (index, ayero) {
+                    layer.close(index);
+                }
+                , success: function (layero, index) {
+
+                }
+
+            })
+        })
+    })
+    ;
+</script>
+
+</html>

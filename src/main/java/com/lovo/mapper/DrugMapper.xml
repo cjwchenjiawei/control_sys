@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lovo.mapper.DrugMapper" >
+  <resultMap id="BaseResultMap" type="com.lovo.model.Drug" >
+    <id column="drug_id" property="drugId" jdbcType="INTEGER" />
+    <result column="drug_name" property="drugName" jdbcType="VARCHAR" />
+    <result column="drug_control" property="drugControl" jdbcType="VARCHAR" />
+    <result column="drug_type" property="drugType" jdbcType="VARCHAR" />
+    <result column="drug_usage" property="drugUsage" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    drug_id, drug_name, drug_control, drug_type, drug_usage
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_drug
+    where drug_id = #{drugId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_drug
+    where drug_id = #{drugId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lovo.model.Drug" >
+    insert into t_drug (drug_id, drug_name, drug_control, 
+      drug_type, drug_usage)
+    values (#{drugId,jdbcType=INTEGER}, #{drugName,jdbcType=VARCHAR}, #{drugControl,jdbcType=VARCHAR}, 
+      #{drugType,jdbcType=VARCHAR}, #{drugUsage,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lovo.model.Drug" >
+    insert into t_drug
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="drugId != null" >
+        drug_id,
+      </if>
+      <if test="drugName != null" >
+        drug_name,
+      </if>
+      <if test="drugControl != null" >
+        drug_control,
+      </if>
+      <if test="drugType != null" >
+        drug_type,
+      </if>
+      <if test="drugUsage != null" >
+        drug_usage,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="drugId != null" >
+        #{drugId,jdbcType=INTEGER},
+      </if>
+      <if test="drugName != null" >
+        #{drugName,jdbcType=VARCHAR},
+      </if>
+      <if test="drugControl != null" >
+        #{drugControl,jdbcType=VARCHAR},
+      </if>
+      <if test="drugType != null" >
+        #{drugType,jdbcType=VARCHAR},
+      </if>
+      <if test="drugUsage != null" >
+        #{drugUsage,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lovo.model.Drug" >
+    update t_drug
+    <set >
+      <if test="drugName != null" >
+        drug_name = #{drugName,jdbcType=VARCHAR},
+      </if>
+      <if test="drugControl != null" >
+        drug_control = #{drugControl,jdbcType=VARCHAR},
+      </if>
+      <if test="drugType != null" >
+        drug_type = #{drugType,jdbcType=VARCHAR},
+      </if>
+      <if test="drugUsage != null" >
+        drug_usage = #{drugUsage,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where drug_id = #{drugId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lovo.model.Drug" >
+    update t_drug
+    set drug_name = #{drugName,jdbcType=VARCHAR},
+      drug_control = #{drugControl,jdbcType=VARCHAR},
+      drug_type = #{drugType,jdbcType=VARCHAR},
+      drug_usage = #{drugUsage,jdbcType=VARCHAR}
+    where drug_id = #{drugId,jdbcType=INTEGER}
+  </update>
+</mapper>

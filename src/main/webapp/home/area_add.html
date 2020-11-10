@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="areaName" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">林种</label>
+        <div class="layui-input-block">
+            <input type="text" name="areaForest" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">优势树种</label>
+        <div class="layui-input-block">
+            <input type="text" name="areaTree" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <label class="layui-form-label">地类</label>
+    <div class="layui-input-block">
+        <select name="areaLand" lay-verify="required">
+            <option value=""></option>
+            <option value="林地" selected="">林地</option>
+            <option value="疏林地">疏林地</option>
+            <option value="灌木林">灌木林</option>
+            <option value="苗圃地">苗圃地</option>
+        </select>
+    </div>
+</form>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+</script>
+</html>

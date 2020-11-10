@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lovo.mapper.AreaMapper">
+    <resultMap id="BaseResultMap" type="com.lovo.model.Area">
+        <id column="area_id" jdbcType="INTEGER" property="areaId"/>
+        <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+        <result column="area_forest" jdbcType="VARCHAR" property="areaForest"/>
+        <result column="area_tree" jdbcType="VARCHAR" property="areaTree"/>
+        <result column="area_land" jdbcType="VARCHAR" property="areaLand"/>
+        <association property="myClass" javaType="MyClass">
+            <id column="class_id" jdbcType="INTEGER" property="classId"/>
+            <result column="class_name" jdbcType="VARCHAR" property="className"/>
+            <result column="class_leader" jdbcType="VARCHAR" property="classLeader"/>
+            <result column="class_tel" jdbcType="VARCHAR" property="classTel"/>
+            <result column="class_number" jdbcType="INTEGER" property="classNumber"/>
+            <result column="class_date" jdbcType="DATE" property="classDate"/>
+        </association>
+    </resultMap>
+    <insert id="insert" parameterType="com.lovo.model.Area">
+        insert into t_area (area_id, area_name, area_forest,
+                            area_tree, area_land)
+        values (#{areaId,jdbcType=INTEGER}, #{areaName,jdbcType=VARCHAR}, #{areaForest,jdbcType=VARCHAR},
+                #{areaTree,jdbcType=VARCHAR}, #{areaLand,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.lovo.model.Area">
+        insert into t_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaId != null">
+                area_id,
+            </if>
+            <if test="areaName != null">
+                area_name,
+            </if>
+            <if test="areaForest != null">
+                area_forest,
+            </if>
+            <if test="areaTree != null">
+                area_tree,
+            </if>
+            <if test="areaLand != null">
+                area_land,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaId != null">
+                #{areaId,jdbcType=INTEGER},
+            </if>
+            <if test="areaName != null">
+                #{areaName,jdbcType=VARCHAR},
+            </if>
+            <if test="areaForest != null">
+                #{areaForest,jdbcType=VARCHAR},
+            </if>
+            <if test="areaTree != null">
+                #{areaTree,jdbcType=VARCHAR},
+            </if>
+            <if test="areaLand != null">
+                #{areaLand,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

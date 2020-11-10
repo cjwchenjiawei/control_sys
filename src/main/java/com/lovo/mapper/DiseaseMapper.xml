@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lovo.mapper.DiseaseMapper" >
+  <resultMap id="BaseResultMap" type="Disease" >
+    <id column="disease_id" property="diseaseId" jdbcType="INTEGER" />
+    <result column="disease_name" property="diseaseName" jdbcType="VARCHAR" />
+    <result column="disease_source" property="diseaseSource" jdbcType="VARCHAR" />
+    <result column="disease_symptom" property="diseaseSymptom" jdbcType="VARCHAR" />
+    <result column="disease_law" property="diseaseLaw" jdbcType="VARCHAR" />
+    <result column="disease_images" property="diseaseImages" jdbcType="VARCHAR" />
+    <result column="disease_control" property="diseaseControl" jdbcType="VARCHAR" />
+    <result column="disease_detriment" property="diseaseDetriment" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    disease_id, disease_name, disease_source, disease_symptom, disease_law, disease_images, 
+    disease_control, disease_detriment
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_disease
+    where disease_id = #{diseaseId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_disease
+    where disease_id = #{diseaseId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lovo.model.Disease" >
+    insert into t_disease (disease_id, disease_name, disease_source, 
+      disease_symptom, disease_law, disease_images, 
+      disease_control, disease_detriment)
+    values (#{diseaseId,jdbcType=INTEGER}, #{diseaseName,jdbcType=VARCHAR}, #{diseaseSource,jdbcType=VARCHAR}, 
+      #{diseaseSymptom,jdbcType=VARCHAR}, #{diseaseLaw,jdbcType=VARCHAR}, #{diseaseImages,jdbcType=VARCHAR}, 
+      #{diseaseControl,jdbcType=VARCHAR}, #{diseaseDetriment,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lovo.model.Disease" >
+    insert into t_disease
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="diseaseId != null" >
+        disease_id,
+      </if>
+      <if test="diseaseName != null" >
+        disease_name,
+      </if>
+      <if test="diseaseSource != null" >
+        disease_source,
+      </if>
+      <if test="diseaseSymptom != null" >
+        disease_symptom,
+      </if>
+      <if test="diseaseLaw != null" >
+        disease_law,
+      </if>
+      <if test="diseaseImages != null" >
+        disease_images,
+      </if>
+      <if test="diseaseControl != null" >
+        disease_control,
+      </if>
+      <if test="diseaseDetriment != null" >
+        disease_detriment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="diseaseId != null" >
+        #{diseaseId,jdbcType=INTEGER},
+      </if>
+      <if test="diseaseName != null" >
+        #{diseaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseSource != null" >
+        #{diseaseSource,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseSymptom != null" >
+        #{diseaseSymptom,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseLaw != null" >
+        #{diseaseLaw,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseImages != null" >
+        #{diseaseImages,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseControl != null" >
+        #{diseaseControl,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseDetriment != null" >
+        #{diseaseDetriment,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lovo.model.Disease" >
+    update t_disease
+    <set >
+      <if test="diseaseName != null" >
+        disease_name = #{diseaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseSource != null" >
+        disease_source = #{diseaseSource,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseSymptom != null" >
+        disease_symptom = #{diseaseSymptom,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseLaw != null" >
+        disease_law = #{diseaseLaw,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseImages != null" >
+        disease_images = #{diseaseImages,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseControl != null" >
+        disease_control = #{diseaseControl,jdbcType=VARCHAR},
+      </if>
+      <if test="diseaseDetriment != null" >
+        disease_detriment = #{diseaseDetriment,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where disease_id = #{diseaseId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lovo.model.Disease" >
+    update t_disease
+    set disease_name = #{diseaseName,jdbcType=VARCHAR},
+      disease_source = #{diseaseSource,jdbcType=VARCHAR},
+      disease_symptom = #{diseaseSymptom,jdbcType=VARCHAR},
+      disease_law = #{diseaseLaw,jdbcType=VARCHAR},
+      disease_images = #{diseaseImages,jdbcType=VARCHAR},
+      disease_control = #{diseaseControl,jdbcType=VARCHAR},
+      disease_detriment = #{diseaseDetriment,jdbcType=VARCHAR}
+    where disease_id = #{diseaseId,jdbcType=INTEGER}
+  </update>
+</mapper>

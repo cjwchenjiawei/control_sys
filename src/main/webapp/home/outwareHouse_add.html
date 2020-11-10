@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-form-item" style="display: none">
+            <div class="layui-input-block">
+                <input type="text" name="outwarehouseId" id="outwarehouseId" required lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+
+        <label class="layui-form-label">领用小班</label>
+        <div class="layui-input-block">
+            <select name="myClassName" lay-verify="required" id="myClassName">
+
+            </select>
+        </div>
+    </div>
+    <div class="layui-row">
+        <label class="layui-form-label">出库人</label>
+        <div class="layui-input-block">
+            <input type="text" name="userName" required lay-verify="required"
+                   autocomplete="off" class="layui-input" id="userName">
+        </div>
+    </div>
+</div>
+<div class="layui-row">
+    <div class="layui-card-body">
+        <table id="demo" lay-filter="test"></table>
+    </div>
+</div>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+</script>
+<div class="layui-row">
+    <div class="layui-col-md2 layui-col-md-offset1 layui-input-inline">
+        <button class="layui-btn" id="btnAdd">添加物品</button>
+    </div>
+    <div class="layui-col-md2 layui-col-md-offset2 layui-input-inline">
+        <button class="layui-btn" id="btnOut">出库</button>
+    </div>
+</div>
+
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+    layui.use(['table', 'jquery', 'laydate', 'form'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+        let html = '<option value="">请选择</option>';
+        let form = layui.form;
+        let outwarehouseId = $('#outwarehouseId').val();
+
+
+        $.ajax({
+            type: "post",
+            url: "/control_sys/MyClass.do?method=queryClassList",
+            dataType: 'json',
+            success: function (data) {
+                for (let i = 0; i < data.length; i++) {
+                    html += "<option value = " + data[i].classId + ">" + data[i].className + "</option>";
+                }
+                $('#myClassName').html(html);
+                form.render('select');
+            }
+        });
+
+        table.render({
+            id: 'outDrugTable'
+            , elem: '#demo'
+            , url: '/control_sys/outDrug.do?outwarehouseId=' + outwarehouseId //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [
+                    {
+                        field: 'drugName',
+                        title: '物品名称',
+                        fixed: 'left'
+                    }, {
+                    field: 'drugType',
+                    title: '类型'
+                }, {
+                    field: 'drugControl',
+                    title: '防治类型'
+                }, {
+                    field: 'outwarehouseDrugNumber',
+                    title: '领用数量',
+                    edit: 'text'
+                }, {
+                    fixed: 'right',
+                    align: 'center',
+                    title: '操作',
+                    toolbar: '#barDemo'
+                }
+                ]
+            ]
+        });
+
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if (layEvent == "delete") {
+                $.ajax({
+                    type: "get",
+                    url: "/control_sys/outDrug.do?method=deleteOutDrug",
+                    data:{
+                        "outwarehouseDrugId":data.outwarehouseDrugId
+                    },
+                    success:function (data) {
+                        if (data == "true") {
+                            table.reload("outDrugTable", {
+                                page: {
+                                    curr: 1
+                                }
+                            })
+                            alert("删除成功")
+                        } else {
+                            alert("删除失败")
+                        }
+                    }
+                })
+            } else if (layEvent == "edit") {
+                $.ajax({
+                    type: "get",
+                    url: "/control_sys/outDrug.do?method=updateOutDrug",
+                    data:{
+                        "outwarehouseDrugId":data.outwarehouseDrugId,
+                        "outwarehouseDrugNumber":data.outwarehouseDrugNumber
+                    },
+                    success:function (data) {
+                        if (data == "true") {
+                            table.reload("outDrugTable", {
+                                page: {
+                                    curr: 1
+                                }
+                            })
+                            alert("修改成功")
+                        } else {
+                            alert("修改失败")
+                        }
+                    }
+                })
+            }
+        });
+
+        $('#btnOut').on('click', function () {
+            $.ajax({
+                type: "get",
+                url: "/control_sys/out.do?method=addOut",
+                data:{
+                    "classId":$('#myClassName').val(),
+                    "userName":$('#userName').val()
+                },
+                success:function (data) {
+                    if (data == "true") {
+
+                        alert("出库成功")
+                    } else {
+                        alert("出库失败")
+                    }
+                }
+            })
+        })
+
+
+        $('#btnAdd').on('click', function () {
+            layer.open({
+                type: 2 //此处以iframe举例
+                , content: "/control_sys/home/outwareHouseDrug_add.html"
+                , title: '添加物品'
+                , area: ['700px', '550px']
+                , shade: [0.8, '#393D49']
+                , anim: 4
+                , btn: ['确定']
+                , yes: function (index, layero) {
+                    table.reload("outDrugTable", {
+                        page: {
+                            curr: 1
+                        }
+                    })
+                    layer.close(index);
+                }
+                , success: function (layero, index) {
+                    let body = layer.getChildFrame('body', index);
+                    body.find("input[name=outwarehouseId]").val(outwarehouseId);
+                }
+            })
+        })
+    })
+    ;
+</script>
+
+</html>

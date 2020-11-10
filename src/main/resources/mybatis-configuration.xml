@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--开启自动驼峰命名规则（camel case）映射，
+    即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 的类似映射。-->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+<!--        <setting name="logImpl" value="LOG4J"/>-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+
+    <typeAliases>
+        <!--给com.yingside.bean包下的所有类起一个别名,默认就是类名 com.yingside.bean.User === User
+        (注意低版本的MyBatis 别名默认是类名首字母小写,相当于 com.yingside.bean.User === user)
+        这样在每个mapper文件中如果出现自定义的类,就不必再写成 包路径 + 类名 的形式了,直接写这里定义的别名就ok
+        -->
+        <package name="com.lovo.model"/>
+        <!--单独的给每个类别名-->
+        <!--<typeAlias type="com.yingside.bean.User" alias="user" />-->
+    </typeAliases>
+
+    <!--配置分页的拦截器-->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!--配置你所使用的数据库-->
+            <property name="helperDialect" value="mysql"/>
+        </plugin>
+    </plugins>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url"
+                          value="jdbc:mysql://127.0.0.1:3306/control_sys?useUnicode=true&amp;characterEncoding=UTF8&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 注册UserMapper.xml文件,
+   UserMapper.xml位于com.yingside.mapper这个包下,
+   所以resource写成com/yingside/mapper/UserMapper.xml-->
+    <mappers>
+        <mapper class="com.lovo.dao.WormMapper"/>
+        <mapper class="com.lovo.dao.AreaMapper"/>
+        <mapper class="com.lovo.dao.MyClassMapper"/>
+        <mapper class="com.lovo.dao.DiseaseMapper"/>
+        <mapper class="com.lovo.dao.MouseMapper"/>
+        <mapper class="com.lovo.dao.ThingMapper"/>
+        <mapper class="com.lovo.dao.ProficientMapper"/>
+        <mapper class="com.lovo.dao.ConferMapper"/>
+        <mapper class="com.lovo.dao.DrugMapper"/>
+        <mapper class="com.lovo.dao.UserMapper"/>
+        <mapper class="com.lovo.dao.OutwareHouseMapper"/>
+        <mapper class="com.lovo.dao.OutwareHouseDrugMapper"/>
+
+        <mapper resource="com/lovo/mapper/WormMapper.xml"/>
+        <mapper resource="com/lovo/mapper/AreaMapper.xml"/>
+        <mapper resource="com/lovo/mapper/MyClassMapper.xml"/>
+        <mapper resource="com/lovo/mapper/DiseaseMapper.xml"/>
+        <mapper resource="com/lovo/mapper/MouseMapper.xml"/>
+        <mapper resource="com/lovo/mapper/ThingMapper.xml"/>
+        <mapper resource="com/lovo/mapper/ProficientMapper.xml"/>
+        <mapper resource="com/lovo/mapper/ConferMapper.xml"/>
+        <mapper resource="com/lovo/mapper/DrugMapper.xml"/>
+        <mapper resource="com/lovo/mapper/UserMapper.xml"/>
+        <mapper resource="com/lovo/mapper/OutwareHouseMapper.xml"/>
+        <mapper resource="com/lovo/mapper/OutwareHouseDrugMapper.xml"/>
+    </mappers>
+
+</configuration>

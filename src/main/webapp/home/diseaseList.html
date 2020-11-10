@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">病害一览</div>
+                <div class="layui-card-body">
+                    <table id="demo" lay-filter="test"></table>
+                </div>
+            </div>
+    </div>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="detail">查看详情</a>
+    </script>
+
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <button class="layui-btn" id="btnAdd">添加新病害</button>
+        </div>
+        <div class="layui-col-md8">
+            <div class="layui-form-item">
+                <label class="layui-form-label">病害名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="diseaseName" required  lay-verify="required" placeholder="请输入病害名称" autocomplete="off" class="layui-input" id="diseaseName">
+                </div>
+                <label class="layui-form-label">发病症状</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="diseaseSymptom" required  lay-verify="required" placeholder="请输入发病症状" autocomplete="off" class="layui-input" id="diseaseSymptom">
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" id="btnQuery">立即查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+    layui.use(['table', 'jquery','layer'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+        let layer = layui.layer;
+        table.render({
+            id:'diseaseTable'
+            ,elem: '#demo'
+            , url: '/control_sys/disease.do' //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            ,parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [ //表头
+                    {
+                        field: 'diseaseName',
+                        title: '病害名称',
+                        fixed: 'left'
+                    }, {
+                    field: 'diseaseDetriment',
+                    title: '主要危害'
+                }, {
+                    field: 'diseaseLaw',
+                    title: '发病规律'
+                }, {
+                    fixed: 'right',
+                    align: 'center',
+                    title: '操作',
+                    toolbar: '#barDemo'
+                }
+                ]
+            ]
+        });
+
+        $('#btnQuery').on('click',function () {
+            table.reload("diseaseTable",{
+                where:{
+                    diseaseName:$('#diseaseName').val()
+                    ,diseaseSymptom:$('#diseaseSymptom').val()
+                }
+                ,page:{
+                    curr:1
+                }
+            });
+        })
+
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if(layEvent == "detail"){
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,content:"/control_sys/home/disease_detail.html"
+                    ,title: '病害详情'
+                    ,area: ['700px', '550px']
+                    ,shade:[0.8, '#393D49']
+                    ,anim:4
+                    ,maxmin: true
+                    ,btn: ['确定'] //只是为了演示
+                    ,yes: function(index,layero){
+                        layer.close(index);
+                    }
+                    ,success:function(layero,index){
+                        let body = layer.getChildFrame('body',index);
+                        body.find("input[name=diseaseName]").val(data.diseaseName);
+                        body.find("input[name=diseaseSource]").val(data.diseaseSource);
+                        body.find("input[name=diseaseImages]").val(data.diseaseImages);
+                        body.find("input[name=diseaseSymptom]").val(data.diseaseSymptom);
+                        body.find("input[name=diseaseLaw]").val(data.diseaseLaw);
+                        body.find("input[name=diseaseControl]").val(data.diseaseControl);
+                        body.find("input[name=diseaseDetriment]").val(data.diseaseDetriment);
+                    }
+                })
+            }
+        });
+
+        $('#btnAdd').on('click',function () {
+            layer.open({
+                type: 2 //此处以iframe举例
+                ,content:"/control_sys/home/disease_add.html"
+                ,title: '添加新病害'
+                ,area: ['700px', '550px']
+                ,shade:[0.8, '#393D49']
+                ,anim:4
+                ,maxmin: true
+                ,btn: ['添加','取消'] //只是为了演示
+                ,yes: function(index,layero){
+                    let body = layer.getChildFrame("body",index);
+                    let diseaseName = body.find('input[name=diseaseName]').val()
+                    let diseaseSource = body.find('input[name=diseaseSource]').val()
+                    let diseaseSymptom = body.find('input[name=diseaseSymptom]').val()
+                    let diseaseLaw = body.find('input[name=diseaseLaw]').val()
+                    let diseaseImages = body.find('input[name=diseaseImages]').val()
+                    let diseaseDetriment = body.find('input[name=diseaseDetriment]').val()
+                    let diseaseControl = body.find('input[name=diseaseControl]').val()
+
+                    $.ajax({
+                        type:"post",
+                        url:"/control_sys/disease.do?method=addDisease",
+                        data:{"diseaseName":diseaseName,"diseaseSource":diseaseSource,"diseaseSymptom":diseaseSymptom,"diseaseLaw":diseaseLaw,"diseaseImages":diseaseImages,"diseaseDetriment":diseaseDetriment,"diseaseControl":diseaseControl},
+                        success:function (res) {
+                            if (res == "true"){
+                                table.reload("diseaseTable",{
+                                    page:{
+                                        curr:1
+                                    }
+                                })
+                                alert("添加成功")
+                            }else{
+                                alert("添加失败")
+                            }
+                        }
+                    })
+                    layer.close(index);
+                }
+                ,btn2:function (index,ayero) {
+                    layer.close(index);
+                }
+                ,success:function(layero,index){
+
+                }
+            })
+        })
+    });
+</script>
+
+</html>

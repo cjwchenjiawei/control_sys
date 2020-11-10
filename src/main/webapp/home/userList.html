@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-header">用户管理</div>
+            <div class="layui-card-body">
+                <table id="demo" lay-filter="test"></table>
+            </div>
+        </div>
+    </div>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+    </script>
+    <div class="layui-row">
+        <div class="layui-col-md2 layui-col-lg-offset2">
+            <button class="layui-btn" id="btnAdd">添加用户</button>
+        </div>
+        <div class="layui-col-md4 layui-col-md-offset4">
+            <div class="layui-form-item">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户等级</label>
+                    <div class="layui-input-inline">
+                        <select name="userGrade" lay-verify="required" id="userGrade">
+                            <option value="" selected=""></option>
+                            <option value="超级管理员">超级管理员</option>
+                            <option value="资料管理员">资料管理员</option>
+                            <option value="灾情管理员">灾情管理员</option>
+                            <option value="专家管理员">专家管理员</option>
+                            <option value="库房管理员">库房管理员</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn" id="btnQuery">立即查询</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+    layui.use(['table', 'jquery'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+
+        table.render({
+            id: 'userTable'
+            , elem: '#demo'
+            , url: '/control_sys/user.do' //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [ //表头
+                    {
+                        field: 'userAccount',
+                        title: '用户名',
+                        fixed: 'left'
+                    }, {
+                    field: 'userPassword',
+                    title: '密码',
+                }, {
+                    field: 'userGrade',
+                    title: '等级',
+                }, {
+                    field: 'userName',
+                    title: '真实姓名'
+                }, {
+                    fixed: 'right',
+                    align: 'center',
+                    title: '操作',
+                    toolbar: '#barDemo'
+                }
+                ]
+            ]
+        });
+
+        $('#btnQuery').on('click', function () {
+            table.reload("userTable", {
+                where: {
+                    userGrade: $('#userGrade').val()
+                }
+                , page: {
+                    curr: 1
+                }
+            });
+        })
+
+
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if (layEvent == "edit") {
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    , content: "/control_sys/home/user_edit.html"
+                    , title: '修改用户信息'
+                    , area: ['700px', '600px']
+                    , shade: [0.8, '#393D49']
+                    , anim: 4
+                    , maxmin: true
+                    , btn: ['确定'] //只是为了演示
+                    ,yes: function(index,layero){
+                        let body = layer.getChildFrame("body", index);
+                        let userPassword1 = body.find("input[name=userPassword1]").val();
+                        let userPassword2 = body.find("input[name=userPassword2]").val();
+                        let userGrade = body.find("select[name=userGrade]").val();
+
+                        $.ajax({
+                            type: "get",
+                            url: "/control_sys/user.do?method=updateUser",
+                            data:{
+                                "userId":data.userId,
+                                "userPassword1":userPassword1,
+                                "userPassword2":userPassword2,
+                                "userGrade":userGrade
+                            },
+                            success:function (data) {
+                                if (data == "true") {
+                                    table.reload("userTable", {
+                                        page: {
+                                            curr: 1
+                                        }
+                                    })
+                                    alert("修改成功")
+                                    layer.close(index);
+                                } else if (data == "false"){
+                                    alert("修改失败")
+                                    layer.close(index);
+                                } else if (data == "两次密码输入不一致，修改失败！"){
+                                    alert("两次密码输入不一致，修改失败！")
+                                }
+                            }
+                        })
+
+                    }
+                    ,success:function(layero,index){
+                        let body = layer.getChildFrame('body',index);
+                        body.find("input[name=userAccount]").val(data.userAccount);
+                        body.find("input[name=userName]").val(data.userName);
+                    }
+                })
+            } else if (layEvent == "delete") {
+                $.ajax({
+                    type: "get",
+                    url: "/control_sys/user.do?method=deleteUser",
+                    data: {
+                        "userId": data.userId,
+                    },
+                    success: function (data) {
+                        if (data == "true") {
+                            table.reload("userTable", {
+                                page: {
+                                    curr: 1
+                                }
+                            })
+                            alert("删除成功")
+                        } else {
+                            alert("删除失败")
+                        }
+                    }
+                })
+            }
+        });
+
+        $('#btnAdd').on('click', function () {
+            layer.open({
+                type: 2 //此处以iframe举例
+                , content: "/control_sys/home/user_add.html"
+                , title: '添加用户信息'
+                , area: ['700px', '550px']
+                , shade: [0.8, '#393D49']
+                , anim: 4
+                , maxmin: true
+                , btn: ['添加', '取消'] //只是为了演示
+                , yes: function (index, layero) {
+                    let body = layer.getChildFrame("body", index);
+                    let userAccount = body.find('input[name=userAccount]').val()
+                    let userPassword1 = body.find('input[name=userPassword1]').val()
+                    let userPassword2 = body.find('input[name=userPassword2]').val()
+                    let userName = body.find('input[name=userName]').val()
+                    let userGrade = body.find('select[name=userGrade]').val()
+
+                    $.ajax({
+                        type: "post",
+                        url: "/control_sys/user.do?method=addUser",
+                        data: {
+                            "userAccount": userAccount,
+                            "userPassword1": userPassword1,
+                            "userPassword2": userPassword2,
+                            "userName": userName,
+                            "userGrade": userGrade
+                        },
+                        success: function (res) {
+                            if (res == "true") {
+                                table.reload("userTable", {
+                                    page: {
+                                        curr: 1
+                                    }
+                                })
+                                alert("添加成功")
+                                layer.close(index);
+                            } else if (res == "false"){
+                                alert("添加失败")
+                                layer.close(index);
+                            } else if (res == "两次密码输入不一致，注册失败！"){
+                                alert("两次密码输入不一致，注册失败！")
+                            }
+                        }
+                    })
+                }
+                , btn2: function (index, ayero) {
+                    layer.close(index);
+                }
+                , success: function (layero, index) {
+
+                }
+
+            })
+        })
+    })
+    ;
+</script>
+
+</html>

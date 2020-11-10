@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="className" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">负责人</label>
+        <div class="layui-input-block">
+            <input type="text" name="classLeader" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">负责人电话</label>
+        <div class="layui-input-block">
+            <input type="text" name="classTel" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">人员数量</label>
+        <div class="layui-input-block">
+            <input type="text" name="classNumber" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <label class="layui-form-label">负责区域</label>
+    <div class="layui-input-block">
+        <select name="areaName" lay-verify="required" id="area">
+
+        </select>
+    </div>
+</form>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layer', 'jquery'], function(){
+        let form = layui.form;
+        let layer = layui.layer;
+        let $ = layui.$;
+        let html = '<option value="">请选择</option>';
+
+        $.ajax({
+            type: "post",
+            url: "/control_sys/area.do?method=queryAreaList",
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                for (let i = 0; i < data.length; i++) {
+                    html += "<option value = " + data[i].areaId + ">" + data[i].areaName + "</option>";
+                }
+                $('#area').html(html);
+                console.log(html)
+                form.render('select');
+            }
+        });
+
+    });
+</script>
+</html>

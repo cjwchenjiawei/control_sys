@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lovo.mapper.WormMapper" >
+  <resultMap id="BaseResultMap" type="Worm" >
+    <id column="worm_id" property="wormId" jdbcType="INTEGER" />
+    <result column="worm_name" property="wormName" jdbcType="VARCHAR" />
+    <result column="worm_host" property="wormHost" jdbcType="VARCHAR" />
+    <result column="worm_breed" property="wormBreed" jdbcType="VARCHAR" />
+    <result column="worm_enemy" property="wormEnemy" jdbcType="VARCHAR" />
+    <result column="worm_larvae" property="wormLarvae" jdbcType="VARCHAR" />
+    <result column="worm_adult" property="wormAdult" jdbcType="VARCHAR" />
+    <result column="worm_control" property="wormControl" jdbcType="VARCHAR" />
+    <result column="worm_detriment" property="wormDetriment" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    worm_id, worm_name, worm_host, worm_breed, worm_enemy, worm_larvae, worm_adult, worm_control, 
+    worm_detriment
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_worm
+    where worm_id = #{wormId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_worm
+    where worm_id = #{wormId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="Worm" >
+    insert into t_worm (worm_id, worm_name, worm_host, 
+      worm_breed, worm_enemy, worm_larvae, 
+      worm_adult, worm_control, worm_detriment
+      )
+    values (#{wormId,jdbcType=INTEGER}, #{wormName,jdbcType=VARCHAR}, #{wormHost,jdbcType=VARCHAR}, 
+      #{wormBreed,jdbcType=VARCHAR}, #{wormEnemy,jdbcType=VARCHAR}, #{wormLarvae,jdbcType=VARCHAR}, 
+      #{wormAdult,jdbcType=VARCHAR}, #{wormControl,jdbcType=VARCHAR}, #{wormDetriment,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="Worm" >
+    insert into t_worm
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="wormId != null" >
+        worm_id,
+      </if>
+      <if test="wormName != null" >
+        worm_name,
+      </if>
+      <if test="wormHost != null" >
+        worm_host,
+      </if>
+      <if test="wormBreed != null" >
+        worm_breed,
+      </if>
+      <if test="wormEnemy != null" >
+        worm_enemy,
+      </if>
+      <if test="wormLarvae != null" >
+        worm_larvae,
+      </if>
+      <if test="wormAdult != null" >
+        worm_adult,
+      </if>
+      <if test="wormControl != null" >
+        worm_control,
+      </if>
+      <if test="wormDetriment != null" >
+        worm_detriment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="wormId != null" >
+        #{wormId,jdbcType=INTEGER},
+      </if>
+      <if test="wormName != null" >
+        #{wormName,jdbcType=VARCHAR},
+      </if>
+      <if test="wormHost != null" >
+        #{wormHost,jdbcType=VARCHAR},
+      </if>
+      <if test="wormBreed != null" >
+        #{wormBreed,jdbcType=VARCHAR},
+      </if>
+      <if test="wormEnemy != null" >
+        #{wormEnemy,jdbcType=VARCHAR},
+      </if>
+      <if test="wormLarvae != null" >
+        #{wormLarvae,jdbcType=VARCHAR},
+      </if>
+      <if test="wormAdult != null" >
+        #{wormAdult,jdbcType=VARCHAR},
+      </if>
+      <if test="wormControl != null" >
+        #{wormControl,jdbcType=VARCHAR},
+      </if>
+      <if test="wormDetriment != null" >
+        #{wormDetriment,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="Worm" >
+    update t_worm
+    <set >
+      <if test="wormName != null" >
+        worm_name = #{wormName,jdbcType=VARCHAR},
+      </if>
+      <if test="wormHost != null" >
+        worm_host = #{wormHost,jdbcType=VARCHAR},
+      </if>
+      <if test="wormBreed != null" >
+        worm_breed = #{wormBreed,jdbcType=VARCHAR},
+      </if>
+      <if test="wormEnemy != null" >
+        worm_enemy = #{wormEnemy,jdbcType=VARCHAR},
+      </if>
+      <if test="wormLarvae != null" >
+        worm_larvae = #{wormLarvae,jdbcType=VARCHAR},
+      </if>
+      <if test="wormAdult != null" >
+        worm_adult = #{wormAdult,jdbcType=VARCHAR},
+      </if>
+      <if test="wormControl != null" >
+        worm_control = #{wormControl,jdbcType=VARCHAR},
+      </if>
+      <if test="wormDetriment != null" >
+        worm_detriment = #{wormDetriment,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where worm_id = #{wormId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="Worm" >
+    update t_worm
+    set worm_name = #{wormName,jdbcType=VARCHAR},
+      worm_host = #{wormHost,jdbcType=VARCHAR},
+      worm_breed = #{wormBreed,jdbcType=VARCHAR},
+      worm_enemy = #{wormEnemy,jdbcType=VARCHAR},
+      worm_larvae = #{wormLarvae,jdbcType=VARCHAR},
+      worm_adult = #{wormAdult,jdbcType=VARCHAR},
+      worm_control = #{wormControl,jdbcType=VARCHAR},
+      worm_detriment = #{wormDetriment,jdbcType=VARCHAR}
+    where worm_id = #{wormId,jdbcType=INTEGER}
+  </update>
+</mapper>

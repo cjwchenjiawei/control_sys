@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-header">药剂/器械一览</div>
+            <div class="layui-card-body">
+                <table id="demo" lay-filter="test"></table>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-md1 layui-col-md-offset1">
+            <button class="layui-btn" id="btnAdd">添加药剂</button>
+        </div>
+
+        <div class="layui-col-md4 layui-col-md-offset6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">药剂名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="drugName" required lay-verify="required" placeholder="请输入药剂名称"
+                           autocomplete="off" class="layui-input" id="drugName">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">防治类型</label>
+                <div class="layui-input-inline">
+                    <select name="drugControl" lay-verify="required" id="drugControl">
+                        <option value="" selected=""></option>
+                        <option value="鼠害" >鼠害</option>
+                        <option value="虫害">虫害</option>
+                        <option value="病害">病害</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">类别</label>
+                <div class="layui-input-inline">
+                    <select name="drugType" lay-verify="required" id="drugType">
+                        <option value="" selected=""></option>
+                        <option value="药剂">药剂</option>
+                        <option value="器械">器械</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" id="btnQuery">立即查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+
+    layui.use(['table', 'jquery', 'laydate'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+        let laydate = layui.laydate;
+        let html = '<option value="">请选择</option>';
+
+
+        table.render({
+            id: 'drugTable'
+            , elem: '#demo'
+            , url: '/control_sys/drug.do' //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [ //表头
+                    {
+                        field: 'drugName',
+                        title: '名称',
+                        fixed: 'left'
+                    }, {
+                    field: 'drugControl',
+                    title: '防治类型'
+                }, {
+                    field: 'drugType',
+                    title: '类别'
+                }, {
+                    field: 'drugUsage',
+                    title: '主要用途'
+                }
+                ]
+            ]
+        });
+
+
+        $('#btnQuery').on('click', function () {
+            table.reload("drugTable", {
+                where: {
+                    drugName: $('#drugName').val()
+                    , drugControl: $('#drugControl').val()
+                    , drugType: $('#drugType').val()
+                }
+                , page: {
+                    curr: 1
+                }
+            });
+        })
+
+
+        $('#btnAdd').on('click', function () {
+            layer.open({
+                type: 2 //此处以iframe举例
+                , content: "/control_sys/home/drug_add.html"
+                , title: '添加药剂/器械'
+                , area: ['700px', '550px']
+                , shade: [0.8, '#393D49']
+                , anim: 4
+                , maxmin: true
+                , btn: ['添加', '取消'] //只是为了演示
+                , yes: function (index, layero) {
+                    let body = layer.getChildFrame("body", index);
+                    let drugName = body.find('input[name=drugName]').val()
+                    let drugControl = body.find('select[name=drugControl]').val()
+                    let drugType = body.find('select[name=drugType]').val()
+                    let drugUsage = body.find('textarea[name=drugUsage]').val()
+
+                    $.ajax({
+                        type: "post",
+                        url: "/control_sys/drug.do?method=addDrug",
+                        data: {
+                            "drugName": drugName,
+                            "drugControl": drugControl,
+                            "drugType": drugType,
+                            "drugUsage": drugUsage,
+                        },
+                        success: function (res) {
+                            if (res == "true") {
+                                table.reload("drugTable", {
+                                    page: {
+                                        curr: 1
+                                    }
+                                })
+                                alert("添加成功")
+                            } else {
+                                alert("添加失败")
+                            }
+                        }
+                    })
+                    layer.close(index);
+                }
+                , btn2: function (index, ayero) {
+                    layer.close(index);
+                }
+                , success: function (layero, index) {
+
+                }
+
+            })
+        })
+
+    })
+    ;
+</script>
+
+</html>

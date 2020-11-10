@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lovo.mapper.MyClassMapper">
+    <resultMap id="BaseResultMap" type="com.lovo.model.MyClass">
+        <id column="class_id" jdbcType="INTEGER" property="classId"/>
+        <result column="class_name" jdbcType="VARCHAR" property="className"/>
+        <result column="class_leader" jdbcType="VARCHAR" property="classLeader"/>
+        <result column="class_tel" jdbcType="VARCHAR" property="classTel"/>
+        <result column="class_number" jdbcType="INTEGER" property="classNumber"/>
+        <result column="class_date" jdbcType="DATE" property="classDate"/>
+        <association property="area" javaType="Area">
+            <id column="area_id" jdbcType="INTEGER" property="areaId"/>
+            <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+            <result column="area_forest" jdbcType="VARCHAR" property="areaForest"/>
+            <result column="area_tree" jdbcType="VARCHAR" property="areaTree"/>
+            <result column="area_land" jdbcType="VARCHAR" property="areaLand"/>
+        </association>
+    </resultMap>
+    <insert id="insert" parameterType="com.lovo.model.MyClass">
+        insert into t_class (class_id, class_name, class_leader,
+                             class_tel, class_number, class_date)
+        values (#{classId,jdbcType=INTEGER}, #{className,jdbcType=VARCHAR}, #{classLeader,jdbcType=VARCHAR},
+                #{classTel,jdbcType=VARCHAR}, #{classNumber,jdbcType=INTEGER}, #{classDate,jdbcType=DATE})
+    </insert>
+    <insert id="insertSelective" parameterType="com.lovo.model.MyClass">
+        insert into t_class
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="classId != null">
+                class_id,
+            </if>
+            <if test="className != null">
+                class_name,
+            </if>
+            <if test="classLeader != null">
+                class_leader,
+            </if>
+            <if test="classTel != null">
+                class_tel,
+            </if>
+            <if test="classNumber != null">
+                class_number,
+            </if>
+            <if test="classDate != null">
+                class_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="classId != null">
+                #{classId,jdbcType=INTEGER},
+            </if>
+            <if test="className != null">
+                #{className,jdbcType=VARCHAR},
+            </if>
+            <if test="classLeader != null">
+                #{classLeader,jdbcType=VARCHAR},
+            </if>
+            <if test="classTel != null">
+                #{class_tel,jdbcType=VARCHAR},
+            </if>
+            <if test="classNumber != null">
+                #{class_number,jdbcType=INTEGER},
+            </if>
+            <if test="classDate != null">
+                #{class_date,jdbcType=DATE},
+            </if>
+        </trim>
+    </insert>
+</mapper>

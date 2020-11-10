@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-header">专家一览</div>
+            <div class="layui-card-body">
+                <table id="demo" lay-filter="test"></table>
+            </div>
+        </div>
+    </div>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+    </script>
+
+    <div class="layui-row">
+        <div class="layui-col-md1">
+            <button class="layui-btn" id="btnAdd">添加专家</button>
+        </div>
+        <div class="layui-col-md11">
+            <div class="layui-form-item">
+                <label class="layui-form-label">专家姓名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="proficientName" required lay-verify="required" placeholder="请输入专家姓名"
+                           autocomplete="off" class="layui-input" id="proficientName">
+                </div>
+                <label class="layui-form-label">专长</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="proficientSpeciality" required lay-verify="required" placeholder="请输入专长"
+                           autocomplete="off" class="layui-input" id="proficientSpeciality">
+                </div>
+                <label class="layui-form-label">工作单位</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="proficientUnit" required lay-verify="required" placeholder="请输入工作单位"
+                           autocomplete="off" class="layui-input" id="proficientUnit">
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" id="btnQuery">立即查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+    layui.use(['table', 'jquery'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+
+        table.render({
+            id: 'proficientTable'
+            , elem: '#demo'
+            , url: '/control_sys/proficient.do' //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            ,parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [ //表头
+                    {
+                        field: 'proficientName',
+                        title: '姓名',
+                        fixed: 'left'
+                    }, {
+                    field: 'proficientUnit',
+                    title: '工作单位'
+                }, {
+                    field: 'proficientSpeciality',
+                    title: '专长'
+                }, {
+                    field: 'proficientJob',
+                    title: '职务'
+                }, {
+                    field: 'proficientTel',
+                    title: '电话'
+                }, {
+                    fixed: 'right',
+                    align: 'center',
+                    title: '操作',
+                    toolbar: '#barDemo'
+                }
+
+                ]
+            ]
+        });
+
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if(layEvent == "detail"){
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,content:"/control_sys/home/proficient_detail.html"
+                    ,title: '查看专家信息'
+                    ,area: ['700px', '600px']
+                    ,shade:[0.8, '#393D49']
+                    ,anim:4
+                    ,maxmin: true
+                    ,btn: ['确定'] //只是为了演示
+                    ,yes: function(index,layero){
+                        layer.close(index);
+                    }
+                    ,success:function(layero,index){
+                        let body = layer.getChildFrame('body',index);
+                        body.find("input[name=proficientName]").val(data.proficientName);
+                        body.find("input[name=proficientBirthday]").val(data.proficientBirthday);
+                        body.find("input[name=proficientGender]").val(data.proficientGender);
+                        body.find("input[name=proficientSpeciality]").val(data.proficientSpeciality);
+                        body.find("input[name=proficientImages]").val(data.proficientImages);
+                        body.find("input[name=proficientJob]").val(data.proficientJob);
+                        body.find("input[name=proficientTel]").val(data.proficientTel);
+                        body.find("input[name=proficientUnit]").val(data.proficientUnit);
+                        body.find("input[name=proficientAddress]").val(data.proficientAddress);
+                        body.find("input[name=proficientEmail]").val(data.proficientEmail);
+                    }
+                })
+            }else if(layEvent == "edit"){
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,content:"/control_sys/home/proficient_edit.html"
+                    ,title: '修改专家信息'
+                    ,area: ['700px', '600px']
+                    ,shade:[0.8, '#393D49']
+                    ,anim:4
+                    ,maxmin: true
+                    ,btn: ['确定'] //只是为了演示
+                    ,yes: function(index,layero){
+                        let body = layer.getChildFrame("body", index);
+                        let proficientJob = body.find("input[name=proficientJob]").val();
+                        let proficientTel = body.find("input[name=proficientTel]").val();
+                        let proficientUnit = body.find("input[name=proficientUnit]").val();
+                        let proficientEmail =body.find("input[name=proficientEmail]").val();
+
+                        $.ajax({
+                            type: "get",
+                            url: "/control_sys/proficient.do?method=updateProficient",
+                            data:{
+                                "proficientId":data.proficientId,
+                                "proficientJob":proficientJob,
+                                "proficientTel":proficientTel,
+                                "proficientUnit":proficientUnit,
+                                "proficientEmail":proficientEmail
+                            },
+                            success:function (data) {
+                                if (data == "true") {
+                                    table.reload("proficientTable", {
+                                        page: {
+                                            curr: 1
+                                        }
+                                    })
+                                    alert("修改成功")
+                                } else {
+                                    alert("修改失败")
+                                }
+                            }
+                        })
+                        layer.close(index);
+                    }
+                    ,success:function(layero,index){
+                        let body = layer.getChildFrame('body',index);
+                        body.find("input[name=proficientName]").val(data.proficientName);
+                        body.find("input[name=proficientBirthday]").val(data.proficientBirthday);
+                        body.find("input[name=proficientGender]").val(data.proficientGender);
+                        body.find("input[name=proficientSpeciality]").val(data.proficientSpeciality);
+                        body.find("input[name=proficientImages]").val(data.proficientImages);
+                        body.find("input[name=proficientJob]").val(data.proficientJob);
+                        body.find("input[name=proficientTel]").val(data.proficientTel);
+                        body.find("input[name=proficientUnit]").val(data.proficientUnit);
+                        body.find("input[name=proficientAddress]").val(data.proficientAddress);
+                        body.find("input[name=proficientEmail]").val(data.proficientEmail);
+                    }
+                })
+            }
+            else if(layEvent == "delete"){
+                $.ajax({
+                    type: "get",
+                    url: "/control_sys/proficient.do?method=deleteProficient",
+                    data:{
+                        "proficientId":data.proficientId,
+                    },
+                    success:function (data) {
+                        if (data == "true") {
+                            table.reload("proficientTable", {
+                                page: {
+                                    curr: 1
+                                }
+                            })
+                            alert("删除成功")
+                        } else {
+                            alert("删除失败")
+                        }
+                    }
+                })
+            }
+        });
+
+        $('#btnQuery').on('click', function () {
+            table.reload("proficientTable", {
+                where: {
+                    proficientName: $('#proficientName').val()
+                    , proficientSpeciality: $('#proficientSpeciality').val()
+                    , proficientUnit: $('#proficientUnit').val()
+                }
+                , page: {
+                    curr: 1
+                }
+            });
+        })
+
+
+        $('#btnAdd').on('click', function () {
+            layer.open({
+                type: 2 //此处以iframe举例
+                , content: "/control_sys/home/proficient_add.html"
+                , title: '添加专家'
+                , area: ['700px', '550px']
+                , shade: [0.8, '#393D49']
+                , anim: 4
+                , maxmin: true
+                , btn: ['添加', '取消'] //只是为了演示
+                , yes: function (index, layero) {
+                    let body = layer.getChildFrame("body", index);
+                    let proficientName = body.find('input[name=proficientName]').val()
+                    let proficientBirthday = body.find('input[name=proficientBirthday]').val()
+                    let proficientGender = body.find('input[name="proficientGender"]:checked').val();
+                    let proficientSpeciality = body.find('input[name=proficientSpeciality]').val()
+                    let proficientImages = body.find('input[name=proficientImages]').val()
+                    let proficientJob = body.find('input[name=proficientJob]').val()
+                    let proficientTel = body.find('input[name=proficientTel]').val()
+                    let proficientUnit = body.find('input[name=proficientUnit]').val()
+                    let proficientAddress = body.find('input[name=proficientAddress]').val()
+                    let proficientEmail = body.find('input[name=proficientEmail]').val()
+
+                    $.ajax({
+                        type: "post",
+                        url: "/control_sys/proficient.do?method=addProficient",
+                        data: {
+                            "proficientName": proficientName,
+                            "proficientBirthday": proficientBirthday,
+                            "proficientGender": proficientGender,
+                            "proficientSpeciality": proficientSpeciality,
+                            "proficientImages": proficientImages,
+                            "proficientJob": proficientJob,
+                            "proficientTel": proficientTel,
+                            "proficientUnit": proficientUnit,
+                            "proficientAddress": proficientAddress,
+                            "proficientEmail": proficientEmail,
+                        },
+                        success: function (res) {
+                            if (res == "true") {
+                                table.reload("proficientTable", {
+                                    page: {
+                                        curr: 1
+                                    }
+                                })
+                                alert("添加成功")
+                            } else {
+                                alert("添加失败")
+                            }
+                        }
+                    })
+                    layer.close(index);
+                }
+                , btn2: function (index, ayero) {
+                    layer.close(index);
+                }
+                , success: function (layero, index) {
+
+                }
+
+            })
+        })
+    })
+    ;
+</script>
+
+</html>

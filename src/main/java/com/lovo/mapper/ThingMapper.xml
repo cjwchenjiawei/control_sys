@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lovo.mapper.ThingMapper" >
+  <resultMap id="BaseResultMap" type="com.lovo.model.Thing" >
+    <id column="thing_id" property="thingId" jdbcType="INTEGER" />
+    <result column="thing_name" property="thingName" jdbcType="VARCHAR" />
+    <result column="thing_images" property="thingImages" jdbcType="VARCHAR" />
+    <result column="thing_time" property="thingTime" jdbcType="DATE" />
+    <result column="thing_type" property="thingType" jdbcType="VARCHAR" />
+    <result column="thing_stage" property="thingStage" jdbcType="VARCHAR" />
+    <result column="thing_description" property="thingDescription" jdbcType="VARCHAR" />
+    <result column="thing_discovery" property="thingDiscovery" jdbcType="VARCHAR" />
+    <result column="thing_loss" property="thingLoss" jdbcType="VARCHAR" />
+    <result column="thing_area" property="thingArea" jdbcType="VARCHAR" />
+    <result column="thing_control" property="thingControl" jdbcType="VARCHAR" />
+    <association property="area" javaType="Area">
+      <id column="area_id" jdbcType="INTEGER" property="areaId"/>
+      <result column="area_name" jdbcType="VARCHAR" property="areaName"/>
+      <result column="area_forest" jdbcType="VARCHAR" property="areaForest"/>
+      <result column="area_tree" jdbcType="VARCHAR" property="areaTree"/>
+      <result column="area_land" jdbcType="VARCHAR" property="areaLand"/>
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    thing_id, thing_name, thing_images, thing_time, thing_type, thing_stage, thing_description, 
+    thing_discovery, fk_area_id, thing_loss, thing_area, thing_control
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_thing
+    where thing_id = #{thingId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_thing
+    where thing_id = #{thingId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lovo.model.Thing" >
+    insert into t_thing (thing_id, thing_name, thing_images, 
+      thing_time, thing_type, thing_stage, 
+      thing_description, thing_discovery, fk_area_id, 
+      thing_loss, thing_area, thing_control
+      )
+    values (#{thingId,jdbcType=INTEGER}, #{thingName,jdbcType=VARCHAR}, #{thingImages,jdbcType=VARCHAR}, 
+      #{thingTime,jdbcType=DATE}, #{thingType,jdbcType=VARCHAR}, #{thingStage,jdbcType=VARCHAR}, 
+      #{thingDescription,jdbcType=VARCHAR}, #{thingDiscovery,jdbcType=VARCHAR}, #{fkAreaId,jdbcType=INTEGER}, 
+      #{thingLoss,jdbcType=VARCHAR}, #{thingArea,jdbcType=VARCHAR}, #{thingControl,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.lovo.model.Thing" >
+    insert into t_thing
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="thingId != null" >
+        thing_id,
+      </if>
+      <if test="thingName != null" >
+        thing_name,
+      </if>
+      <if test="thingImages != null" >
+        thing_images,
+      </if>
+      <if test="thingTime != null" >
+        thing_time,
+      </if>
+      <if test="thingType != null" >
+        thing_type,
+      </if>
+      <if test="thingStage != null" >
+        thing_stage,
+      </if>
+      <if test="thingDescription != null" >
+        thing_description,
+      </if>
+      <if test="thingDiscovery != null" >
+        thing_discovery,
+      </if>
+      <if test="fkAreaId != null" >
+        fk_area_id,
+      </if>
+      <if test="thingLoss != null" >
+        thing_loss,
+      </if>
+      <if test="thingArea != null" >
+        thing_area,
+      </if>
+      <if test="thingControl != null" >
+        thing_control,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="thingId != null" >
+        #{thingId,jdbcType=INTEGER},
+      </if>
+      <if test="thingName != null" >
+        #{thingName,jdbcType=VARCHAR},
+      </if>
+      <if test="thingImages != null" >
+        #{thingImages,jdbcType=VARCHAR},
+      </if>
+      <if test="thingTime != null" >
+        #{thingTime,jdbcType=DATE},
+      </if>
+      <if test="thingType != null" >
+        #{thingType,jdbcType=VARCHAR},
+      </if>
+      <if test="thingStage != null" >
+        #{thingStage,jdbcType=VARCHAR},
+      </if>
+      <if test="thingDescription != null" >
+        #{thingDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="thingDiscovery != null" >
+        #{thingDiscovery,jdbcType=VARCHAR},
+      </if>
+      <if test="fkAreaId != null" >
+        #{fkAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="thingLoss != null" >
+        #{thingLoss,jdbcType=VARCHAR},
+      </if>
+      <if test="thingArea != null" >
+        #{thingArea,jdbcType=VARCHAR},
+      </if>
+      <if test="thingControl != null" >
+        #{thingControl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lovo.model.Thing" >
+    update t_thing
+    <set >
+      <if test="thingName != null" >
+        thing_name = #{thingName,jdbcType=VARCHAR},
+      </if>
+      <if test="thingImages != null" >
+        thing_images = #{thingImages,jdbcType=VARCHAR},
+      </if>
+      <if test="thingTime != null" >
+        thing_time = #{thingTime,jdbcType=DATE},
+      </if>
+      <if test="thingType != null" >
+        thing_type = #{thingType,jdbcType=VARCHAR},
+      </if>
+      <if test="thingStage != null" >
+        thing_stage = #{thingStage,jdbcType=VARCHAR},
+      </if>
+      <if test="thingDescription != null" >
+        thing_description = #{thingDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="thingDiscovery != null" >
+        thing_discovery = #{thingDiscovery,jdbcType=VARCHAR},
+      </if>
+      <if test="fkAreaId != null" >
+        fk_area_id = #{fkAreaId,jdbcType=INTEGER},
+      </if>
+      <if test="thingLoss != null" >
+        thing_loss = #{thingLoss,jdbcType=VARCHAR},
+      </if>
+      <if test="thingArea != null" >
+        thing_area = #{thingArea,jdbcType=VARCHAR},
+      </if>
+      <if test="thingControl != null" >
+        thing_control = #{thingControl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where thing_id = #{thingId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lovo.model.Thing" >
+    update t_thing
+    set thing_name = #{thingName,jdbcType=VARCHAR},
+      thing_images = #{thingImages,jdbcType=VARCHAR},
+      thing_time = #{thingTime,jdbcType=DATE},
+      thing_type = #{thingType,jdbcType=VARCHAR},
+      thing_stage = #{thingStage,jdbcType=VARCHAR},
+      thing_description = #{thingDescription,jdbcType=VARCHAR},
+      thing_discovery = #{thingDiscovery,jdbcType=VARCHAR},
+      fk_area_id = #{fkAreaId,jdbcType=INTEGER},
+      thing_loss = #{thingLoss,jdbcType=VARCHAR},
+      thing_area = #{thingArea,jdbcType=VARCHAR},
+      thing_control = #{thingControl,jdbcType=VARCHAR}
+    where thing_id = #{thingId,jdbcType=INTEGER}
+  </update>
+</mapper>

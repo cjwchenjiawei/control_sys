@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lovo.mapper.OutwareHouseMapper">
+    <resultMap id="BaseResultMap" type="com.lovo.model.OutwareHouse">
+        <id column="outwarehouse_id" property="outwarehouseId" jdbcType="INTEGER"/>
+        <result column="outwarehouse_user" property="outwarehouseUser" jdbcType="VARCHAR"/>
+        <result column="outwarehouse_time" property="outwarehouseTime" jdbcType="DATE"/>
+        <association property="myClass" javaType="MyClass">
+            <id column="class_id" jdbcType="INTEGER" property="classId"/>
+            <result column="class_name" jdbcType="VARCHAR" property="className"/>
+            <result column="class_leader" jdbcType="VARCHAR" property="classLeader"/>
+            <result column="class_tel" jdbcType="VARCHAR" property="classTel"/>
+            <result column="class_number" jdbcType="INTEGER" property="classNumber"/>
+            <result column="class_date" jdbcType="DATE" property="classDate"/>
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        outwarehouse_id, outwarehouse_user, fk_class_id, outwarehouse_time
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from t_outwarehouse
+        where outwarehouse_id = #{outwarehouseId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from t_outwarehouse
+        where outwarehouse_id = #{outwarehouseId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.lovo.model.OutwareHouse">
+        insert into t_outwarehouse (outwarehouse_id, fk_user_id, fk_class_id)
+        values (#{outwarehouseId,jdbcType=INTEGER}, #{fkUserId,jdbcType=INTEGER}, #{fkClassId,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.lovo.model.OutwareHouse">
+        insert into t_outwarehouse
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="outwarehouseId != null">
+                outwarehouse_id,
+            </if>
+            <if test="fkUserId != null">
+                fk_user_id,
+            </if>
+            <if test="fkClassId != null">
+                fk_class_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="outwarehouseId != null">
+                #{outwarehouseId,jdbcType=INTEGER},
+            </if>
+            <if test="fkUserId != null">
+                #{fkUserId,jdbcType=INTEGER},
+            </if>
+            <if test="fkClassId != null">
+                #{fkClassId,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.lovo.model.OutwareHouse">
+        update t_outwarehouse
+        <set>
+            <if test="fkUserId != null">
+                fk_user_id = #{fkUserId,jdbcType=INTEGER},
+            </if>
+            <if test="fkClassId != null">
+                fk_class_id = #{fkClassId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where outwarehouse_id = #{outwarehouseId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.lovo.model.OutwareHouse">
+        update t_outwarehouse
+        set fk_user_id  = #{fkUserId,jdbcType=INTEGER},
+            fk_class_id = #{fkClassId,jdbcType=INTEGER}
+        where outwarehouse_id = #{outwarehouseId,jdbcType=INTEGER}
+    </update>
+</mapper>

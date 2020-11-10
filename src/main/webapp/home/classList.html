@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-header">小班管理</div>
+            <div class="layui-card-body">
+                <table id="demo" lay-filter="test"></table>
+            </div>
+        </div>
+    </div>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    </script>
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <button class="layui-btn" id="btnAdd">添加小班</button>
+        </div>
+        <div class="layui-col-md8">
+            <div class="layui-form-item">
+                <label class="layui-form-label">小班名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="className" required lay-verify="required" placeholder="请输入小班名称"
+                           autocomplete="off" class="layui-input" id="className">
+                </div>
+                <label class="layui-form-label">负责区域</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="areaName" required lay-verify="required" placeholder="请输入负责区域"
+                           autocomplete="off" class="layui-input" id="areaName">
+                </div>
+
+                <div class="layui-input-inline">
+                    <button class="layui-btn" id="btnQuery">立即查询</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+    layui.use(['table', 'jquery'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+
+        table.render({
+            id: 'classTable'
+            , elem: '#demo'
+            , url: '/control_sys/MyClass.do' //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            ,parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [ //表头
+                    {
+                        field: 'className',
+                        title: '小班名称',
+                        fixed: 'left'
+                    }, {
+                    field: 'classLeader',
+                    title: '负责人',
+                    edit:'text'
+                }, {
+                    field: 'classTel',
+                    title: '负责人电话',
+                    edit:'text'
+                }, {
+                    field: 'areaName',
+                    title: '负责区域'
+                }, {
+                    fixed: 'right',
+                    align: 'center',
+                    title: '操作',
+                    toolbar: '#barDemo'
+                }
+                ]
+            ]
+        });
+
+        $('#btnQuery').on('click', function () {
+            table.reload("classTable", {
+                where: {
+                    className: $('#className').val()
+                    , areaName: $('#areaName').val()
+                }
+                , page: {
+                    curr: 1
+                }
+            });
+        })
+
+
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if(layEvent == "detail"){
+                layer.open({
+                    type: 2 //此处以iframe举例
+                    ,content:"/control_sys/home/class_detail.html"
+                    ,title: '查看小班信息'
+                    ,area: ['700px', '600px']
+                    ,shade:[0.8, '#393D49']
+                    ,anim:4
+                    ,maxmin: true
+                    ,btn: ['确定'] //只是为了演示
+                    ,yes: function(index,layero){
+                        layer.close(index);
+                    }
+                    ,success:function(layero,index){
+                        let body = layer.getChildFrame('body',index);
+                        body.find("input[name=className]").val(data.className);
+                        body.find("input[name=classLeader]").val(data.classLeader);
+                        body.find("input[name=classTel]").val(data.classTel);
+                        body.find("input[name=classNumber]").val(data.classNumber);
+                        body.find("input[name=areaName]").val(data.areaName);
+                        body.find("input[name=areaForest]").val(data.areaForest);
+                        body.find("input[name=areaLand]").val(data.areaLand);
+                        body.find("input[name=areaTree]").val(data.areaTree);
+                        body.find("input[name=classDate]").val(data.classDate);
+                    }
+                })
+            }else if(layEvent == "edit"){
+                $.ajax({
+                    type: "get",
+                    url: "/control_sys/MyClass.do?method=updateClass",
+                    data:{
+                        "classId":data.classId,
+                        "classLeader":data.classLeader,
+                        "classTel":data.classTel
+                    },
+                    success:function (data) {
+                        if (data=="true"){
+                            layer.msg("编辑成功")
+                        }else{
+                            layer.msg("编辑失败")
+                        }
+                    }
+                })
+            }
+        });
+
+        $('#btnAdd').on('click', function () {
+            layer.open({
+                type: 2 //此处以iframe举例
+                , content: "/control_sys/home/class_add.html"
+                , title: '新增小班'
+                , area: ['700px', '550px']
+                , shade: [0.8, '#393D49']
+                , anim: 4
+                , maxmin: true
+                , btn: ['添加', '取消'] //只是为了演示
+                , yes: function (index, layero) {
+                    let body = layer.getChildFrame("body", index);
+                    let className = body.find('input[name=className]').val()
+                    let classLeader = body.find('input[name=classLeader]').val()
+                    let classTel = body.find('input[name=classTel]').val()
+                    let classNumber = body.find('input[name=classNumber]').val()
+                    let areaName = body.find('select[name=areaName]').val()
+
+                    $.ajax({
+                        type: "post",
+                        url: "/control_sys/MyClass.do?method=addClass",
+                        data: {
+                            "className": className,
+                            "classLeader": classLeader,
+                            "classTel": classTel,
+                            "classNumber": classNumber,
+                            "areaName": areaName
+                        },
+                        success: function (res) {
+                            if (res == "true") {
+                                table.reload("classTable", {
+                                    page: {
+                                        curr: 1
+                                    }
+                                })
+                                alert("添加成功")
+                            } else {
+                                alert("添加失败")
+                            }
+                        }
+                    })
+                    layer.close(index);
+                }
+                , btn2: function (index, ayero) {
+                    layer.close(index);
+                }
+                , success: function (layero, index) {
+
+                }
+
+            })
+        })
+    })
+    ;
+</script>
+
+</html>

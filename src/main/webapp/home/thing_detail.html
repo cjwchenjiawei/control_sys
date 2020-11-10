@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <div class="layui-form-item" style="display: none">
+            <div class="layui-input-block">
+                <input type="text" name="thingId" id="thingId" required lay-verify="required" autocomplete="off" class="layui-input"
+                       readonly>
+            </div>
+        </div>
+        <label class="layui-form-label">事件名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingName" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingTime" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾情阶段</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingStage" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾情描述</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingDescription" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾区图片</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingImages" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">发现途径</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingDiscovery" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">发生位置</label>
+        <div class="layui-input-block">
+            <input type="text" name="areaName" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾害类型</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingType" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所在小班</label>
+        <div class="layui-input-block">
+            <input type="text" name="className" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">初步损失</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingLoss" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">影响面积</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingArea" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">专家建议</label>
+        <div class="layui-input-block">
+            <input type="text" name="conferResult" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">防治方案</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingControl" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-card-body">
+            <table id="demo" lay-filter="test"></table>
+        </div>
+    </div>
+</form>
+</body>
+<script src="../layui/layui.js"></script>
+</html>
+<script src="../layui/layui.js"></script>
+<script>
+    let use = layui.use(['table', 'jquery'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+
+        let thingId = $('#thingId').val()
+        table.render({
+            id: 'conferTable'
+            , elem: '#demo'
+            , url: '/control_sys/confer.do?thingId='+thingId //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [ //表头
+                    {
+                        field: 'conferTime',
+                        title: '日期',
+                        fixed: 'left'
+                    }, {
+                    field: 'conferProficients',
+                    title: '会商人员'
+                },  {
+                    field: 'conferResult',
+                    title: '会商结果'
+                }
+                ]
+            ]
+        });
+    })
+</script>

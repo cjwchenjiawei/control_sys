@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-form-item" style="display: none">
+            <div class="layui-input-block">
+                <input type="text" name="outwarehouseId" id="outwarehouseId" required lay-verify="required" autocomplete="off" class="layui-input"
+                       readonly>
+            </div>
+        </div>
+        <label class="layui-form-label">领用小班</label>
+        <div class="layui-input-block">
+            <input type="text" name="myClassName" required lay-verify="required" readonly
+                   autocomplete="off" class="layui-input" id="myClassName">
+        </div>
+
+        <label class="layui-form-label">出库人</label>
+        <div class="layui-input-block">
+            <input type="text" name="userName" required lay-verify="required" readonly
+                   autocomplete="off" class="layui-input" id="userName">
+        </div>
+
+        <label class="layui-form-label">领用日期</label>
+        <div class="layui-input-block">
+            <input type="text" name="date" required lay-verify="required" readonly
+                   autocomplete="off" class="layui-input" id="date">
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-card-body">
+            <table id="demo" lay-filter="test"></table>
+        </div>
+    </div>
+
+
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+
+    layui.use(['table', 'jquery', 'laydate'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+        let outwarehouseId = $('#outwarehouseId').val()
+
+        table.render({
+            id: 'outDrugTable'
+            , elem: '#demo'
+            , url: '/control_sys/outDrug.do?outwarehouseId='+outwarehouseId //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [
+                    {
+                        field: 'drugName',
+                        title: '物品名称',
+                        fixed: 'left'
+                    }, {
+                    field: 'drugType',
+                    title: '类型'
+                }, {
+                    field: 'drugControl',
+                    title: '防治类型'
+                }, {
+                    field: 'outwarehouseDrugNumber',
+                    title: '领用数量'
+                }
+                ]
+            ]
+        });
+
+
+    })
+    ;
+</script>
+
+</html>

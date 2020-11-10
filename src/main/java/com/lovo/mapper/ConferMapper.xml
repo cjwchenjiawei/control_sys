@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lovo.mapper.ConferMapper">
+    <resultMap id="BaseResultMap" type="Confer">
+        <id column="confer_id" property="conferId" jdbcType="INTEGER"/>
+        <result column="confer_proficients" property="conferProficients"/>
+        <result column="confer_result" property="conferResult" jdbcType="VARCHAR"/>
+        <result column="confer_time" property="conferTime" jdbcType="DATE"/>
+        <association property="thing" javaType="Thing">
+            <id column="thing_id" property="thingId" jdbcType="INTEGER"/>
+            <result column="thing_name" property="thingName" jdbcType="VARCHAR"/>
+            <result column="thing_images" property="thingImages" jdbcType="VARCHAR"/>
+            <result column="thing_time" property="thingTime" jdbcType="DATE"/>
+            <result column="thing_type" property="thingType" jdbcType="VARCHAR"/>
+            <result column="thing_stage" property="thingStage" jdbcType="VARCHAR"/>
+            <result column="thing_description" property="thingDescription" jdbcType="VARCHAR"/>
+            <result column="thing_discovery" property="thingDiscovery" jdbcType="VARCHAR"/>
+            <result column="thing_loss" property="thingLoss" jdbcType="VARCHAR"/>
+            <result column="thing_area" property="thingArea" jdbcType="VARCHAR"/>
+            <result column="thing_control" property="thingControl" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        confer_id, fk_thing_id, confer_proficients, confer_result, confer_time
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from t_confer
+        where confer_id = #{conferId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from t_confer
+        where confer_id = #{conferId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.lovo.model.Confer">
+        insert into t_confer (confer_id, fk_thing_id, confer_result)
+        values (#{conferId,jdbcType=INTEGER}, #{fkThingId,jdbcType=INTEGER}, #{conferResult,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.lovo.model.Confer">
+        insert into t_confer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="conferId != null">
+                confer_id,
+            </if>
+            <if test="fkThingId != null">
+                fk_thing_id,
+            </if>
+            <if test="conferResult != null">
+                confer_result,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="conferId != null">
+                #{conferId,jdbcType=INTEGER},
+            </if>
+            <if test="fkThingId != null">
+                #{fkThingId,jdbcType=INTEGER},
+            </if>
+            <if test="conferResult != null">
+                #{conferResult,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.lovo.model.Confer">
+        update t_confer
+        <set>
+            <if test="fkThingId != null">
+                fk_thing_id = #{fkThingId,jdbcType=INTEGER},
+            </if>
+            <if test="conferResult != null">
+                confer_result = #{conferResult,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where confer_id = #{conferId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.lovo.model.Confer">
+        update t_confer
+        set fk_thing_id   = #{fkThingId,jdbcType=INTEGER},
+            confer_result = #{conferResult,jdbcType=VARCHAR}
+        where confer_id = #{conferId,jdbcType=INTEGER}
+    </update>
+</mapper>

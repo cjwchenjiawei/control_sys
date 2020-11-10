@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-block">
+            <input type="text" name="userAccount" required  lay-verify="required" autocomplete="off" class="layui-input" readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-block">
+            <input type="text" name="userPassword1" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认密码</label>
+        <div class="layui-input-block">
+            <input type="text" name="userPassword2" required  lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">真实姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="userName" required  lay-verify="required" autocomplete="off" class="layui-input" readonly>
+        </div>
+    </div>
+    <label class="layui-form-label">用户等级</label>
+    <div class="layui-input-block">
+        <select name="userGrade" lay-verify="required" id="userGrade">
+            <option value="" selected=""></option>
+            <option value="超级管理员">超级管理员</option>
+            <option value="资料管理员">资料管理员</option>
+            <option value="灾情管理员">灾情管理员</option>
+            <option value="专家管理员">专家管理员</option>
+            <option value="库房管理员">库房管理员</option>
+        </select>
+    </div>
+</form>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+    layui.use(['form', 'layer', 'jquery'], function(){
+        let form = layui.form;
+        let layer = layui.layer;
+        let $ = layui.$;
+
+    });
+</script>
+</html>

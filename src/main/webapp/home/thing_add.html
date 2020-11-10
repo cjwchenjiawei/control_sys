@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">事件名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingName" required lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾区图片</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingImages" required lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingTime" id="date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾害类型</label>
+        <div class="layui-input-block">
+            <select name="thingType" lay-verify="required">
+                <option value=""></option>
+                <option value="虫害" selected="">虫害</option>
+                <option value="鼠害">鼠害</option>
+                <option value="病害">病害</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾情阶段</label>
+        <div class="layui-input-block">
+            <select name="thingStage" lay-verify="required">
+                <option value=""></option>
+                <option value="已经得到控制" selected="">已经得到控制</option>
+                <option value="防治中">防治中</option>
+                <option value="无法解决，申请专家会商">无法解决，申请专家会商</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾情描述</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingDescription" required lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">发现途径</label>
+        <div class="layui-input-block">
+            <select name="thingDiscovery" lay-verify="required">
+                <option value=""></option>
+                <option value="小班巡查发现" selected="">小班巡查发现</option>
+                <option value="公众发现">公众发现</option>
+                <option value="上级部门通报">上级部门通报</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">发生位置</label>
+        <div class="layui-input-block">
+            <select name="areaName" lay-filter="area" lay-verify="required" id="areaName">
+
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所在小班</label>
+        <div class="layui-input-block">
+            <input type="text" name="className" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">初步损失</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingLoss" required lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">影响面积</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingArea" required lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">防治方案</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingControl" required lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+</form>
+</body>
+<script src="../layui/layui.js"></script>
+</html>
+<script src="../layui/layui.js"></script>
+<script>
+    let use = layui.use(['form', 'table', 'jquery', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.$;
+        let laydate = layui.laydate;
+        let html = '<option value="">请选择</option>';
+
+        laydate.render({
+            elem: '#date'
+        });
+
+        $.ajax({
+            type: "post",
+            url: "/control_sys/area.do?method=queryAllAreaList",
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                for (let i = 0; i < data.length; i++) {
+                    html += "<option value = " + data[i].areaId + ">" + data[i].areaName + "</option>";
+                }
+                $('#areaName').html(html);
+                form.render('select');
+
+            }
+        });
+        form.on('select(area)', function (data) {
+            $.ajax({
+                type: "get"
+                , url: "/control_sys/MyClass.do?method=queryClass"
+                , data: {
+                    myClassId: data.value
+                }
+                , success: function (res) {
+                        $("input[name=className]").val(res)
+                }
+            })
+
+
+        })
+    })
+</script>

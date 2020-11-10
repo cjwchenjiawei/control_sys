@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-header">事件记录</div>
+            <div class="layui-card-body">
+                <table id="demo" lay-filter="test"></table>
+            </div>
+        </div>
+    </div>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="consultation">专家会商</a>
+    </script>
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+
+    layui.use(['table', 'jquery'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+
+        table.render({
+            id: 'thingTable'
+            , elem: '#demo'
+            , url: '/control_sys/thing.do?method=conferList' //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [ //表头
+                    {
+                        field: 'thingName',
+                        title: '事件名称',
+                        fixed: 'left'
+                    }, {
+                    field: 'thingTime',
+                    title: '日期'
+                }, {
+                    field: 'areaName',
+                    title: '发生位置'
+                }, {
+                    field: 'thingControl',
+                    title: '防治方案'
+                }, {
+                    field: 'thingStage',
+                    title: '灾情状态'
+                }, {
+                    fixed: 'right',
+                    align: 'center',
+                    title: '操作',
+                    toolbar: '#barDemo'
+                }
+                ]
+            ]
+        });
+
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if (layEvent == "consultation") {
+                layer.open({
+                    type: 2
+                    , area: ['1330px', '680px']
+                    , content: "/control_sys/home/confer_consultation.html"
+                    , title: '专家会商'
+                    , shade: [0.8, '#393D49']
+                    , anim: 4
+                    , success: function (layero, index) {
+                        let body = layer.getChildFrame('body', index);
+                        body.find("input[name=thingId]").val(data.thingId);
+                        body.find("input[name=thingName]").val(data.thingName);
+                        body.find("input[name=thingTime]").val(data.thingTime);
+                        body.find("input[name=thingStage]").val(data.thingStage);
+                        body.find("input[name=thingDescription]").val(data.thingDescription);
+                        body.find("input[name=thingImages]").val(data.thingImages);
+                        body.find("input[name=thingDiscovery]").val(data.thingDiscovery);
+                        body.find("input[name=areaName]").val(data.areaName);
+                        body.find("input[name=thingType]").val(data.thingType);
+                        body.find("input[name=className]").val(data.className);
+                        body.find("input[name=thingLoss]").val(data.thingLoss);
+                        body.find("input[name=thingArea]").val(data.thingArea);
+                        body.find("input[name=conferResult]").val(data.conferResult);
+                        body.find("input[name=thingControl]").val(data.thingControl);
+                    }
+                })
+            }
+        });
+    })
+    ;
+</script>
+
+</html>

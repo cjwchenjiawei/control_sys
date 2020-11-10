@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lovo.mapper.ProficientMapper" >
+  <resultMap id="BaseResultMap" type="com.lovo.model.Proficient" >
+    <id column="proficient_id" property="proficientId" jdbcType="INTEGER" />
+    <result column="proficient_name" property="proficientName" jdbcType="VARCHAR" />
+    <result column="proficient_gender" property="proficientGender" jdbcType="VARCHAR" />
+    <result column="proficient_birthday" property="proficientBirthday" jdbcType="DATE" />
+    <result column="proficient_images" property="proficientImages" jdbcType="VARCHAR" />
+    <result column="proficient_speciality" property="proficientSpeciality" jdbcType="VARCHAR" />
+    <result column="proficient_job" property="proficientJob" jdbcType="VARCHAR" />
+    <result column="proficient_tel" property="proficientTel" jdbcType="VARCHAR" />
+    <result column="proficient_unit" property="proficientUnit" jdbcType="VARCHAR" />
+    <result column="proficient_address" property="proficientAddress" jdbcType="VARCHAR" />
+    <result column="proficient_email" property="proficientEmail" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    proficient_id, proficient_name, proficient_gender, proficient_birthday, proficient_images, 
+    proficient_speciality, proficient_job, proficient_tel, proficient_unit, proficient_address, 
+    proficient_email
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_proficient
+    where proficient_id = #{proficientId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_proficient
+    where proficient_id = #{proficientId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lovo.model.Proficient" >
+    insert into t_proficient (proficient_id, proficient_name, proficient_gender, 
+      proficient_birthday, proficient_images, proficient_speciality, 
+      proficient_job, proficient_tel, proficient_unit, 
+      proficient_address, proficient_email)
+    values (#{proficientId,jdbcType=INTEGER}, #{proficientName,jdbcType=VARCHAR}, #{proficientGender,jdbcType=VARCHAR}, 
+      #{proficientBirthday,jdbcType=DATE}, #{proficientImages,jdbcType=VARCHAR}, #{proficientSpeciality,jdbcType=VARCHAR}, 
+      #{proficientJob,jdbcType=VARCHAR}, #{proficientTel,jdbcType=VARCHAR}, #{proficientUnit,jdbcType=VARCHAR}, 
+      #{proficientAddress,jdbcType=VARCHAR}, #{proficientEmail,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lovo.model.Proficient" >
+    insert into t_proficient
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="proficientId != null" >
+        proficient_id,
+      </if>
+      <if test="proficientName != null" >
+        proficient_name,
+      </if>
+      <if test="proficientGender != null" >
+        proficient_gender,
+      </if>
+      <if test="proficientBirthday != null" >
+        proficient_birthday,
+      </if>
+      <if test="proficientImages != null" >
+        proficient_images,
+      </if>
+      <if test="proficientSpeciality != null" >
+        proficient_speciality,
+      </if>
+      <if test="proficientJob != null" >
+        proficient_job,
+      </if>
+      <if test="proficientTel != null" >
+        proficient_tel,
+      </if>
+      <if test="proficientUnit != null" >
+        proficient_unit,
+      </if>
+      <if test="proficientAddress != null" >
+        proficient_address,
+      </if>
+      <if test="proficientEmail != null" >
+        proficient_email,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="proficientId != null" >
+        #{proficientId,jdbcType=INTEGER},
+      </if>
+      <if test="proficientName != null" >
+        #{proficientName,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientGender != null" >
+        #{proficientGender,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientBirthday != null" >
+        #{proficientBirthday,jdbcType=DATE},
+      </if>
+      <if test="proficientImages != null" >
+        #{proficientImages,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientSpeciality != null" >
+        #{proficientSpeciality,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientJob != null" >
+        #{proficientJob,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientTel != null" >
+        #{proficientTel,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientUnit != null" >
+        #{proficientUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientAddress != null" >
+        #{proficientAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientEmail != null" >
+        #{proficientEmail,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lovo.model.Proficient" >
+    update t_proficient
+    <set >
+      <if test="proficientName != null" >
+        proficient_name = #{proficientName,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientGender != null" >
+        proficient_gender = #{proficientGender,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientBirthday != null" >
+        proficient_birthday = #{proficientBirthday,jdbcType=DATE},
+      </if>
+      <if test="proficientImages != null" >
+        proficient_images = #{proficientImages,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientSpeciality != null" >
+        proficient_speciality = #{proficientSpeciality,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientJob != null" >
+        proficient_job = #{proficientJob,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientTel != null" >
+        proficient_tel = #{proficientTel,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientUnit != null" >
+        proficient_unit = #{proficientUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientAddress != null" >
+        proficient_address = #{proficientAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="proficientEmail != null" >
+        proficient_email = #{proficientEmail,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where proficient_id = #{proficientId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lovo.model.Proficient" >
+    update t_proficient
+    set proficient_name = #{proficientName,jdbcType=VARCHAR},
+      proficient_gender = #{proficientGender,jdbcType=VARCHAR},
+      proficient_birthday = #{proficientBirthday,jdbcType=DATE},
+      proficient_images = #{proficientImages,jdbcType=VARCHAR},
+      proficient_speciality = #{proficientSpeciality,jdbcType=VARCHAR},
+      proficient_job = #{proficientJob,jdbcType=VARCHAR},
+      proficient_tel = #{proficientTel,jdbcType=VARCHAR},
+      proficient_unit = #{proficientUnit,jdbcType=VARCHAR},
+      proficient_address = #{proficientAddress,jdbcType=VARCHAR},
+      proficient_email = #{proficientEmail,jdbcType=VARCHAR}
+    where proficient_id = #{proficientId,jdbcType=INTEGER}
+  </update>
+</mapper>

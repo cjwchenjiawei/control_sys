@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../layui/css/layui.css" media="all">
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item" style="display: none">
+        <div class="layui-input-block">
+            <input type="text" name="thingId" id="thingId" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">事件名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingName" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingTime" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">发生位置</label>
+        <div class="layui-input-block">
+            <input type="text" name="areaName" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾情描述</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingDescription" required lay-verify="required" autocomplete="off"
+                   class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">灾区图片</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingImages" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">影响面积</label>
+        <div class="layui-input-block">
+            <input type="text" name="thingArea" required lay-verify="required" autocomplete="off" class="layui-input"
+                   readonly>
+        </div>
+    </div>
+
+    <div class="layui-row">
+        <div class="layui-col-md6">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>会商人员</legend>
+            </fieldset>
+
+            <div id="select" class="demo-transfer"></div>
+        </div>
+        <div class="layui-col-md6">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>会商结果</legend>
+            </fieldset>
+            <div class="layui-input-block">
+                <textarea name="conferResult" placeholder="请输入内容" class="layui-textarea" id="conferResult"></textarea>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-row">
+        <div class="layui-col-md2 layui-col-md-offset1">
+            <button class="layui-btn" id="btnAdd" lay-demoTransferActive="getData">添加会商信息</button>
+        </div>
+        <div class="layui-col-md1">
+            <button class="layui-btn" id="btnCancel">返回</button>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-card-body">
+            <table id="demo" lay-filter="test"></table>
+        </div>
+    </div>
+</form>
+</body>
+</html>
+<script src="../layui/layui.js" charset="utf-8"></script>
+<script>
+    let use = layui.use(['table', 'jquery', 'transfer', 'layer', 'util'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+        let transfer = layui.transfer;
+        let layer = layui.layer;
+        let util = layui.util;
+        let conferProficients = "";
+        let conferResult;
+        var index = parent.layer.getFrameIndex(window.name);
+
+        $.ajax({
+            type:"get"
+            ,url: "/control_sys/proficient.do?method=proficientList"
+            , dataType: "json"
+            ,success:function (res){
+                transfer.render({
+                    elem: '#select'
+                    ,title: ['待选专家', '已选专家']
+                    ,id:'cs'
+                    ,data:res
+                    //,width: 150 //定义宽度
+                    ,height: 210 //定义高度
+                    ,parseData: function(res) {
+                        //根据返回数据格式进行解析
+                        return {
+                            "value":res.proficientId//数据值
+                            ,
+                            "title":res.proficientName //数据标题
+                            ,
+                            "disabled": res.disabled  //是否禁用
+                            ,
+                            "checked": res.checked //是否选中
+                        }
+                    }
+                })
+            }
+        })
+
+        util.event('lay-demoTransferActive', {
+            getData: function(othis){
+                let list = transfer.getData('cs'); //获取右侧数据
+                for(i of list){
+                    conferProficients += i.title+ ","
+                }
+                conferResult = $('#conferResult').val();
+                $.ajax({
+                    type: "get"
+                    ,url: "/control_sys/confer.do?method=addConfer"
+                    ,data:{
+                        "conferProficients":conferProficients,
+                        "conferResult":conferResult,
+                        "thingId":$('#thingId').val()
+                    }
+                    , success: function (response) {
+                        if (response == "true") {
+                            alert("添加成功")
+                            table.reload("conferTable", {
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                            });
+                        } else {
+                            alert("添加失败")
+                        }
+                    }
+                })
+            }
+        });
+        let thingId = $('#thingId').val()
+        table.render({
+            id: 'conferTable'
+            , elem: '#demo'
+            , url: '/control_sys/confer.do?thingId='+thingId //数据接口
+            , page: true //开启分页
+            , request: {
+                pageName: 'pageNo' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                return {
+                    "code": 0, //解析接口状态
+                    "count": res.total, //解析数据长度
+                    "data": res.list
+                };
+            }
+            , limits: [2, 5, 10]
+            , cols: [
+                [ //表头
+                    {
+                        field: 'conferTime',
+                        title: '日期',
+                        fixed: 'left'
+                    }, {
+                    field: 'conferProficients',
+                    title: '会商人员'
+                },  {
+                    field: 'conferResult',
+                    title: '会商结果'
+                }
+                ]
+            ]
+        });
+
+        $('#btnCancel').on('click',function (){
+            parent.layer.close(index);//关闭当前页
+        })
+    })
+</script>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="drugName" required lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">防治类型</label>
+        <div class="layui-input-block">
+            <select name="drugControl" lay-verify="required" id="drugControl">
+                <option value="" selected=""></option>
+                <option value="鼠害" >鼠害</option>
+                <option value="虫害">虫害</option>
+                <option value="病害">病害</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">类别</label>
+        <div class="layui-input-block">
+            <select name="drugType" lay-verify="required" id="drugType">
+                <option value="" selected=""></option>
+                <option value="药剂">药剂</option>
+                <option value="器械">器械</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">主要用途</label>
+        <div class="layui-input-block">
+            <textarea name="drugUsage" placeholder="请输入主要用途" class="layui-textarea"></textarea>
+        </div>
+    </div>
+</form>
+</body>
+<script src="../layui/layui.js"></script>
+</html>
+<script src="../layui/layui.js"></script>
+<script>
+    let use = layui.use(['table', 'jquery','laydate'], function () {
+        let table = layui.table;
+        let $ = layui.$;
+        let laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#date'
+        });
+    })
+</script>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>森林病虫害防治系统</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">森林病虫害防治系统</div>
+    </div>>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="" href="javascript:;">资料管理</a>
+                        <dl class="layui-nav-child">
+                            <dd><a target="myiframe" href="home/wormList.html">虫害一览</a></dd>
+                            <dd><a target="myiframe" href="home/diseaseList.html">病害一览</a></dd>
+                            <dd><a target="myiframe" href="home/mouseList.html">鼠害一览</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">灾情防治</a>
+                        <dl class="layui-nav-child">
+                            <dd><a target="myiframe" href="home/areaList.html">区域一览</a></dd>
+                            <dd><a target="myiframe" href="home/classList.html">小班管理</a></dd>
+                            <dd><a target="myiframe" href="home/thingList.html">事件记录</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">专家会商</a>
+                        <dl class="layui-nav-child">
+                            <dd><a target="myiframe" href="home/proficientList.html">专家一览</a></dd>
+                            <dd><a target="myiframe" href="home/conferList.html">会商灾情</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a class="" href="javascript:;">药剂器械出库管理</a>
+                        <dl class="layui-nav-child">
+                            <dd><a target="myiframe" href="home/drugList.html">药剂器械管理</a></dd>
+                            <dd><a target="myiframe" href="home/outwareHouseList.html">出库管理</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a class="" href="javascript:;">系统管理</a>
+                        <dl class="layui-nav-child">
+                            <dd><a target="myiframe" href="home/userList.html">用户管理</a></dd>
+                            <dd><a target="myiframe" href="">日志一览</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <iframe id="myiframe" name="myiframe" src="home/wormList.html"class="layadmin-iframe"></iframe>
+
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            © layui.com - 底部固定区域
+        </div>
+
+</div>
+</body>
+<script src="layui/layui.js"></script>
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+
+    });
+
+
+</script>
+</html>

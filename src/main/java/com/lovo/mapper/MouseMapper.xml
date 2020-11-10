@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lovo.mapper.MouseMapper" >
+  <resultMap id="BaseResultMap" type="com.lovo.model.Mouse" >
+    <id column="mouse_id" property="mouseId" jdbcType="INTEGER" />
+    <result column="mouse_name" property="mouseName" jdbcType="VARCHAR" />
+    <result column="mouse_food" property="mouseFood" jdbcType="VARCHAR" />
+    <result column="mouse_breed" property="mouseBreed" jdbcType="VARCHAR" />
+    <result column="mouse_enemy" property="mouseEnemy" jdbcType="VARCHAR" />
+    <result column="mouse_images" property="mouseImages" jdbcType="VARCHAR" />
+    <result column="mouse_control" property="mouseControl" jdbcType="VARCHAR" />
+    <result column="mouse_detriment" property="mouseDetriment" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    mouse_id, mouse_name, mouse_food, mouse_breed, mouse_enemy, mouse_images, mouse_control, 
+    mouse_detriment
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mouse
+    where mouse_id = #{mouseId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_mouse
+    where mouse_id = #{mouseId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lovo.model.Mouse" >
+    insert into t_mouse (mouse_id, mouse_name, mouse_food, 
+      mouse_breed, mouse_enemy, mouse_images, 
+      mouse_control, mouse_detriment)
+    values (#{mouseId,jdbcType=INTEGER}, #{mouseName,jdbcType=VARCHAR}, #{mouseFood,jdbcType=VARCHAR}, 
+      #{mouseBreed,jdbcType=VARCHAR}, #{mouseEnemy,jdbcType=VARCHAR}, #{mouseImages,jdbcType=VARCHAR}, 
+      #{mouseControl,jdbcType=VARCHAR}, #{mouseDetriment,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lovo.model.Mouse" >
+    insert into t_mouse
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mouseId != null" >
+        mouse_id,
+      </if>
+      <if test="mouseName != null" >
+        mouse_name,
+      </if>
+      <if test="mouseFood != null" >
+        mouse_food,
+      </if>
+      <if test="mouseBreed != null" >
+        mouse_breed,
+      </if>
+      <if test="mouseEnemy != null" >
+        mouse_enemy,
+      </if>
+      <if test="mouseImages != null" >
+        mouse_images,
+      </if>
+      <if test="mouseControl != null" >
+        mouse_control,
+      </if>
+      <if test="mouseDetriment != null" >
+        mouse_detriment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mouseId != null" >
+        #{mouseId,jdbcType=INTEGER},
+      </if>
+      <if test="mouseName != null" >
+        #{mouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseFood != null" >
+        #{mouseFood,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseBreed != null" >
+        #{mouseBreed,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseEnemy != null" >
+        #{mouseEnemy,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseImages != null" >
+        #{mouseImages,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseControl != null" >
+        #{mouseControl,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseDetriment != null" >
+        #{mouseDetriment,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lovo.model.Mouse" >
+    update t_mouse
+    <set >
+      <if test="mouseName != null" >
+        mouse_name = #{mouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseFood != null" >
+        mouse_food = #{mouseFood,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseBreed != null" >
+        mouse_breed = #{mouseBreed,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseEnemy != null" >
+        mouse_enemy = #{mouseEnemy,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseImages != null" >
+        mouse_images = #{mouseImages,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseControl != null" >
+        mouse_control = #{mouseControl,jdbcType=VARCHAR},
+      </if>
+      <if test="mouseDetriment != null" >
+        mouse_detriment = #{mouseDetriment,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where mouse_id = #{mouseId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lovo.model.Mouse" >
+    update t_mouse
+    set mouse_name = #{mouseName,jdbcType=VARCHAR},
+      mouse_food = #{mouseFood,jdbcType=VARCHAR},
+      mouse_breed = #{mouseBreed,jdbcType=VARCHAR},
+      mouse_enemy = #{mouseEnemy,jdbcType=VARCHAR},
+      mouse_images = #{mouseImages,jdbcType=VARCHAR},
+      mouse_control = #{mouseControl,jdbcType=VARCHAR},
+      mouse_detriment = #{mouseDetriment,jdbcType=VARCHAR}
+    where mouse_id = #{mouseId,jdbcType=INTEGER}
+  </update>
+</mapper>
